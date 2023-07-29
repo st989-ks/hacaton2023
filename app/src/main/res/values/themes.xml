@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme.HacatonAndroid" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">#FF6CB657</item>
+        <item name="android:navigationBarColor">#FF6CB657</item>
+        <item name="android:statusBarColor">#FF6CB657</item>
+    </style>
+</resources>

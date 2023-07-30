@@ -3,7 +3,9 @@ package ru.aries.hacaton.screens.module_main
 import android.app.Activity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import cafe.adriel.voyager.core.screen.Screen
@@ -35,6 +38,7 @@ import ru.aries.hacaton.base.common_composable.BoxImageRowRes
 import ru.aries.hacaton.base.common_composable.BoxSpacer
 import ru.aries.hacaton.base.common_composable.ButtonAccentApp
 import ru.aries.hacaton.base.common_composable.DialogBackPressExit
+import ru.aries.hacaton.base.common_composable.FloatingActionButtonApp
 import ru.aries.hacaton.base.common_composable.IconApp
 import ru.aries.hacaton.base.common_composable.IconButtonApp
 import ru.aries.hacaton.base.common_composable.TextBodyMedium
@@ -104,98 +108,114 @@ private fun MainScreen(
     ) -> Unit,
     onClickMenu: (ScreenChoose) -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(ThemeApp.colors.background)
             .systemBarsPadding()
     ) {
-        TopPanel(
-            status = status,
-            onClickLogout = onClickLogout,
-            onClickNotifications = onClickNotifications,
-        )
-        Row(
-            modifier = Modifier.weight(1f)
+
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(ThemeApp.colors.background)
+
         ) {
-            RightPanel(
-                avatar = avatar,
+            TopPanel(
                 status = status,
-                name = name,
-                onClickUser = onClickUser,
-                onClickMenu = onClickMenu,
+                onClickLogout = onClickLogout,
+                onClickNotifications = onClickNotifications,
             )
+            Row(
+                modifier = Modifier.weight(1f)
+            ) {
+                RightPanel(
+                    avatar = avatar,
+                    status = status,
+                    name = name,
+                    onClickUser = onClickUser,
+                    onClickMenu = onClickMenu,
+                )
 
-            when (status) {
-                ScreenChoose.FIRST -> LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    content = {
-                        items(offers) { item ->
-                            ItemOffers(
-                                title = item.title ?: "",
-                                minPrice = item.min_price?.toString() ?: "",
-                                id = item.id.toString(),
-                                maxPrice = item.max_price?.toString() ?: "",
-                                percent = item.percent?.toString() ?: "",
-                                annualPayment = item.annual_payment?.toString() ?: "",
-                                paymentTerm = item.payment_term?.toString() ?: "",
-                                nameBank = item.bank?.name ?: "",
-                                urlBank = item.bank?.url ?: "",
-                                iconBank = item.bank?.icon ?: "",
-                                idBank = item.bank?.id?.toString() ?: "",
-                            )
-                        }
-                    })
+                when (status) {
+                    ScreenChoose.FIRST -> LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        contentPadding = PaddingValues(DimApp.screenPadding),
+                        verticalArrangement = Arrangement.spacedBy(DimApp.screenPadding),
+                        content = {
+                            items(offers) { item ->
+                                ItemOffers(
+                                    title = item.title ?: "",
+                                    minPrice = item.min_price?.toString() ?: "",
+                                    id = item.id.toString(),
+                                    maxPrice = item.max_price?.toString() ?: "",
+                                    percent = item.percent?.let { it / 100f }?.toString() ?: "",
+                                    annualPayment = item.annual_payment?.toString() ?: "",
+                                    paymentTerm = item.payment_term?.toString() ?: "",
+                                    nameBank = item.bank?.name ?: "",
+                                    urlBank = item.bank?.url ?: "",
+                                    iconBank = item.bank?.icon ?: "",
+                                    idBank = item.bank?.id?.toString() ?: "",
+                                )
+                            }
+                        })
 
 
-                ScreenChoose.SECOND -> LazyColumn(
-                    modifier = Modifier.weight(1f),
-                    content = {
-                        items(bid) { item ->
+                    ScreenChoose.SECOND -> LazyColumn(
+                        modifier = Modifier.weight(1f),
+                        contentPadding = PaddingValues(DimApp.screenPadding),
+                        verticalArrangement = Arrangement.spacedBy(DimApp.screenPadding),
+                        content = {
+                            items(bid) { item ->
 
-                            ItemBid(
-                                desiredAmount = item.desired_amount?.toString() ?: "",
-                                idBid = item.id.toString(),
-                                isAccepted = item.is_accepted,
-                                actualAmount = item.actual_amount?.toString() ?: "",
-                                annualPayment = item.annual_payment?.toString() ?: "",
-                                percent = item.percent?.toString() ?: "",
-                                created = item.created?.toDateString() ?: "",
-                                titleOffer = item.offer?.title ?: "",
-                                minPriceOffer = item.offer?.min_price?.toString() ?: "",
-                                idOffer = item.offer?.id.toString(),
-                                maxPriceOffer = item.offer?.max_price?.toString() ?: "",
-                                percentOffer = item.offer?.percent?.toString() ?: "",
-                                annualPaymentOffer = item.offer?.annual_payment?.toString() ?: "",
-                                paymentTermOffer = item.offer?.payment_term?.toString() ?: "",
-                                firstName = item.user?.first_name?.toString() ?: "",
-                                lastName = item.user?.last_name?.toString() ?: "",
-                                patronymic = item.user?.patronymic?.toString() ?: "",
-                                birthdate = item.user?.birthdate?.toDateString() ?: "",
-                                gender = item.user?.convertInEnumGender(),
-                                onClickAccepted = {
-                                    onClickApproval.invoke(
-                                        true,
-                                        item.id,
-                                        item.actual_amount ?: 1,
-                                        item.annual_payment ?: 1,
-                                        item.percent ?: 1,
-                                    )
-                                },
-                                onClickNoAccepted = {
-                                    onClickApproval.invoke(
-                                        false,
-                                        item.id,
-                                        item.actual_amount ?: 1,
-                                        item.annual_payment ?: 1,
-                                        item.percent ?: 1,
-                                    )
-                                },
-                            )
-                        }
-                    })
+                                ItemBid(
+                                    desiredAmount = item.desired_amount?.toString() ?: "",
+                                    idBid = item.id.toString(),
+                                    isAccepted = item.is_accepted,
+                                    actualAmount = item.actual_amount?.toString() ?: "",
+                                    annualPayment = item.annual_payment?.toString() ?: "",
+                                    percent = item.percent?.let { it / 100f }?.toString() ?: "",
+                                    created = item.created?.toDateString() ?: "",
+                                    titleOffer = item.offer?.title ?: "",
+                                    minPriceOffer = item.offer?.min_price?.toString() ?: "",
+                                    idOffer = item.offer?.id.toString(),
+                                    maxPriceOffer = item.offer?.max_price?.toString() ?: "",
+                                    percentOffer = item.offer?.percent?.toString() ?: "",
+                                    annualPaymentOffer = item.offer?.annual_payment?.toString()
+                                        ?: "",
+                                    paymentTermOffer = item.offer?.payment_term?.toString() ?: "",
+                                    firstName = item.user?.first_name?.toString() ?: "",
+                                    lastName = item.user?.last_name?.toString() ?: "",
+                                    patronymic = item.user?.patronymic?.toString() ?: "",
+                                    birthdate = item.user?.birthdate?.toDateString() ?: "",
+                                    gender = item.user?.convertInEnumGender(),
+                                    onClickAccepted = {
+                                        onClickApproval.invoke(
+                                            true,
+                                            item.id,
+                                            item.actual_amount ?: 1,
+                                            item.annual_payment ?: 1,
+                                            item.percent ?: 1,
+                                        )
+                                    },
+                                    onClickNoAccepted = {
+                                        onClickApproval.invoke(
+                                            false,
+                                            item.id,
+                                            item.actual_amount ?: 1,
+                                            item.annual_payment ?: 1,
+                                            item.percent ?: 1,
+                                        )
+                                    },
+                                )
+                            }
+                        })
 
+                }
             }
+        }
+        FloatingActionButtonApp(onClick = { /*TODO*/ }) {
+            
         }
     }
 }
@@ -221,6 +241,7 @@ private fun ItemOffers(
                 elevation = DimApp.shadowElevation,
                 shape = ThemeApp.shape.mediumAll
             )
+            .background(ThemeApp.colors.backgroundVariant)
             .padding(DimApp.screenPadding)
     ) {
 
@@ -229,9 +250,8 @@ private fun ItemOffers(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             BoxImageLoad(
-                modifier = Modifier
-                    .size(DimApp.iconSizeBig)
-                    .clip(CircleShape),
+                modifier = Modifier.height(DimApp.iconSizeBig),
+                contentScale = ContentScale.FillHeight,
                 drawableError = R.drawable.stab_avatar,
                 drawablePlaceholder = R.drawable.stab_avatar,
                 image = iconBank
@@ -280,6 +300,7 @@ private fun ItemBid(
                 elevation = DimApp.shadowElevation,
                 shape = ThemeApp.shape.mediumAll
             )
+            .background(ThemeApp.colors.backgroundVariant)
             .padding(DimApp.screenPadding)
     ) {
         Row(
@@ -298,23 +319,25 @@ private fun ItemBid(
 
         BoxSpacer()
         TextBodyMedium(text = "Список документов: ")
+        BoxSpacer(.3f)
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            repeat(5){
+            repeat(5) {
                 BoxImageLoad(
                     modifier = Modifier
                         .size(DimApp.iconStubBig)
                         .clip(ThemeApp.shape.smallAll),
-                    image = R.drawable.stub_photo_v2
+                    image = R.drawable.inn
                 )
+                BoxSpacer()
             }
-
         }
         BoxSpacer()
         if (isAccepted == null) {
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
@@ -341,7 +364,6 @@ private fun ItemBid(
     }
 }
 
-
 @Composable
 private fun RightPanel(
     status: ScreenChoose,
@@ -351,12 +373,12 @@ private fun RightPanel(
     onClickMenu: (ScreenChoose) -> Unit
 ) {
     val firstColor = if (status == ScreenChoose.FIRST) {
-        colorsIconButtonApp().copy(containerColor = ThemeApp.colors.primary)
+        colorsIconButtonApp().copy(contentColor = ThemeApp.colors.primary)
     } else {
         colorsIconButtonApp()
     }
     val secondColor = if (status == ScreenChoose.SECOND) {
-        colorsIconButtonApp().copy(containerColor = ThemeApp.colors.primary)
+        colorsIconButtonApp().copy(contentColor = ThemeApp.colors.primary)
     } else {
         colorsIconButtonApp()
     }
@@ -365,14 +387,13 @@ private fun RightPanel(
         Modifier
             .fillMaxHeight()
             .width(DimApp.heightNavigationBottomBar)
-            .background(ThemeApp.colors.backgroundVariant)
-            .shadow(DimApp.shadowElevation)
+            .background(ThemeApp.colors.backgroundVariant),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BoxSpacer()
         BoxImageLoad(
             modifier = Modifier
-                .padding(DimApp.screenPadding)
-                .size(DimApp.iconSizeBig)
+                .size(DimApp.iconSizeTouchBig)
                 .clip(CircleShape)
                 .clickableRipple { onClickUser.invoke() },
             drawableError = R.drawable.stab_avatar,
@@ -382,22 +403,50 @@ private fun RightPanel(
         BoxSpacer()
         TextBodyMedium(
             modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f), textAlign = TextAlign.Start, text = name
+                .fillMaxWidth(),
+            textAlign = TextAlign.Start,
+            text = name
         )
         BoxSpacer()
-        IconButtonApp(modifier = Modifier,
-            colors = firstColor,
-            onClick = { onClickMenu.invoke(ScreenChoose.FIRST) }) {
-            IconApp(painter = rememberImageRaw(R.raw.ic_search))
-            Text(text = "Лента", style = ThemeApp.typography.button)
+
+        Column(
+            modifier = Modifier.clickableRipple(
+                bounded = false,
+                radius = DimApp.heightNavigationBottomBar * .5f,
+            ) { onClickMenu.invoke(ScreenChoose.FIRST) },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            IconApp(
+                tint = firstColor.contentColor,
+                painter = rememberImageRaw(R.raw.ic_piggy_bank)
+            )
+            BoxSpacer(.4f)
+            Text(
+                text = "Лента",
+                style = ThemeApp.typography.button,
+                color = firstColor.contentColor
+            )
         }
         BoxSpacer()
-        IconButtonApp(modifier = Modifier,
-            colors = secondColor,
-            onClick = { onClickMenu.invoke(ScreenChoose.SECOND) }) {
-            IconApp(painter = rememberImageRaw(R.raw.ic_search))
-            Text(text = "Заявки", style = ThemeApp.typography.button)
+        Column(
+            modifier = Modifier.clickableRipple(
+                bounded = false,
+                radius = DimApp.heightNavigationBottomBar * .5f,
+            ) { onClickMenu.invoke(ScreenChoose.SECOND) },
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            IconApp(
+                tint = secondColor.contentColor,
+                painter = rememberImageRaw(R.raw.ic_files)
+            )
+            BoxSpacer(.4f)
+            Text(
+                text = "Заявки",
+                style = ThemeApp.typography.button,
+                color = secondColor.contentColor
+            )
         }
     }
 }
@@ -408,37 +457,48 @@ private fun TopPanel(
     onClickLogout: () -> Unit,
     onClickNotifications: () -> Unit,
 ) {
-    Row(
+    Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(DimApp.heightNavigationBottomBar)
             .background(ThemeApp.colors.backgroundVariant)
-            .shadow(DimApp.shadowElevation),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(horizontal = DimApp.screenPadding),
     ) {
 
-        BoxImageRowRes(
-            modifier = Modifier.size(DimApp.iconSizeOrder),
-            image = R.raw.ic_piggy_bank,
-            colorFilter = ColorFilter.tint(ThemeApp.colors.primary),
-        )
-        BoxSpacer()
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterStart),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            BoxImageRowRes(
+                modifier = Modifier
+                    .size(DimApp.iconSizeOrder),
+                image = R.raw.ic_piggy_bank,
+                colorFilter = ColorFilter.tint(ThemeApp.colors.primary),
+            )
+            BoxSpacer()
+            Text(
+                style = ThemeApp.typography.titleLarge.copy(fontSize = DimApp.fontSplashSize),
+                text = TextApp.baseTextNameApp,
+                color = ThemeApp.colors.primary
+            )
+        }
+
         Text(
-            style = ThemeApp.typography.titleLarge.copy(fontSize = DimApp.fontSplashSize),
-            text = TextApp.baseTextNameApp,
-            color = ThemeApp.colors.primary
-        )
-        BoxSpacer()
-        Text(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.align(Alignment.Center),
             textAlign = TextAlign.Center,
-            style = ThemeApp.typography.titleLarge.copy(fontSize = DimApp.fontSplashSize),
+            style = ThemeApp.typography.titleMedium,
             text = status.getTextTitle(),
-            color = ThemeApp.colors.primary
+            color = ThemeApp.colors.textDark
         )
-        BoxSpacer()
-        Row(modifier = Modifier.fillMaxHeight()) {
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .fillMaxHeight(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             IconButtonApp(
                 modifier = Modifier, onClick = onClickNotifications
             ) {

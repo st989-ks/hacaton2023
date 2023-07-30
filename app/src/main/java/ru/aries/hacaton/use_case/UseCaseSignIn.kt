@@ -28,18 +28,18 @@ class UseCaseSignIn(
     ) {
         flowStart.invoke()
         val data = apiSignIn.postSignIn(email = email, password = password)
-        if (!data.status.isSuccess()) {
+        if (!data.isSuccess) {
             flowError.invoke()
-            flowMessage.invoke(data.response.getDescriptionRudApi())
+            flowMessage.invoke(data.getDescriptionRudApi())
             return
         }
-        data.response.data?.let { newData ->
+        data.data?.let { newData ->
             dataStore.UserData().update { newData.user }
             dataStore.TokenData().putTokenServer(newData.token)
             flowSuccess.invoke(newData.user)
         } ?: run {
             flowError.invoke()
-            flowMessage.invoke(data.response.getDescriptionRudApi())
+            flowMessage.invoke(data.getDescriptionRudApi())
         }
     }
 
@@ -53,16 +53,16 @@ class UseCaseSignIn(
     ) {
         flowStart.invoke()
         val data = apiSignIn.postBidId(bid = bid, bidId = bidId)
-        if (!data.status.isSuccess()) {
+        if (!data.isSuccess) {
             flowError.invoke()
-            flowMessage.invoke(data.response.getDescriptionRudApi())
+            flowMessage.invoke(data.getDescriptionRudApi())
             return
         }
-        data.response.data?.let { newData ->
+        data.data?.let { newData ->
             flowSuccess.invoke(newData)
         } ?: run {
             flowError.invoke()
-            flowMessage.invoke(data.response.getDescriptionRudApi())
+            flowMessage.invoke(data.getDescriptionRudApi())
         }
     }
 

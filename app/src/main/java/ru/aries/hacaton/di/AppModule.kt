@@ -5,6 +5,7 @@ import ru.aries.hacaton.data.api_client.ApiSignIn
 import ru.aries.hacaton.data.api_client.Client
 import ru.aries.hacaton.data.data_store.DataStorePrefs
 import ru.aries.hacaton.screens.module_authorization.AuthModel
+import ru.aries.hacaton.screens.module_main.HomeMainModel
 import ru.aries.hacaton.screens.splash.SplashModel
 import ru.aries.hacaton.use_case.UseCaseSignIn
 
@@ -24,5 +25,6 @@ val setUseCase = module {
 
 val setModels = module {
     factory { AuthModel(get()) }
+    factory { HomeMainModel(get()) }
     factory { SplashModel() }
 }

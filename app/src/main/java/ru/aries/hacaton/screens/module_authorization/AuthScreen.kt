@@ -117,7 +117,9 @@ private fun AuthorizationScr(
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f)
+                    .weight(1f),
+                contentAlignment = Alignment.Center
+
             ) {
                 Column(
                     modifier = Modifier
@@ -186,7 +188,7 @@ private fun AuthorizationScr(
                         ButtonAccentApp(
                             modifier = Modifier
                                 .align(Alignment.End)
-                                .padding(horizontal = DimApp.screenPadding),
+                                .padding(bottom = DimApp.screenPadding),
                             enabled = checkData,
                             onClick = sendData,
                             text = TextApp.titleNext

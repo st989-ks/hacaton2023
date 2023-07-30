@@ -98,132 +98,102 @@ class Client(
     }
 }
 
-data class HttpResponseRud<T>(
-    val response: RudApi<T>,
-    val status: HttpStatusCode,
-)
+//
+//suspend inline fun <reified T, RESP> HttpClient.postRequest(
+//    urlString: String,
+//    body: T,
+//    query: Map<String, Any?>? = null,
+//): HttpResponseRud<RESP> {
+//    return try {
+//        val queryParams = Parameters.build {
+//            query?.forEach { (str, any) ->
+//                any?.let { append(str, any.toString()) }
+//            }
+//        }
+//        val response = post(
+//            urlString = urlString,
+//            block = {
+//                url { parameters.appendAll(queryParams) }
+//                setBody(body)
+//            }
+//
+//        )
+//        HttpResponseRud(
+//            response = response.body(),
+//            status = response.status
+//        )
+//    } catch (e: Exception) {
+//        logE(urlString, e.message)
+//        e.printStackTrace()
+//        HttpResponseRud(
+//            response = RudApi.getError(description = e.message, errorCode = e.hashCode()),
+//            status = HttpStatusCode(value = 599, description = e.message ?: "Unknown Exception")
+//        )
+//    }
+//}
 
-suspend inline fun <reified T, RESP> HttpClient.postRequest(
-    urlString: String,
-    body: T
-): HttpResponseRud<RESP> {
-    return try {
-        val response = post(
-            urlString = urlString,
-            block = {
-                setBody(body)
-            }
-
-        )
-        HttpResponseRud(
-            response = response.body(),
-            status = response.status
-        )
-    } catch (e: Exception) {
-        logE(urlString, e.message)
-        e.printStackTrace()
-        HttpResponseRud(
-            response = RudApi.getError(description = e.message, errorCode = e.hashCode()),
-            status = HttpStatusCode(value = 599, description = e.message ?: "Unknown Exception")
-        )
-    }
-}
-
-suspend inline fun <reified T, RESP> HttpClient.postRequest(
-    urlString: String,
-    body: T,
-    query: Map<String, Any?>? = null,
-): HttpResponseRud<RESP> {
-    return try {
-        val queryParams = Parameters.build {
-            query?.forEach { (str, any) ->
-                any?.let { append(str, any.toString()) }
-            }
-        }
-        val response = post(
-            urlString = urlString,
-            block = {
-                url { parameters.appendAll(queryParams) }
-                setBody(body)
-            }
-
-        )
-        HttpResponseRud(
-            response = response.body(),
-            status = response.status
-        )
-    } catch (e: Exception) {
-        logE(urlString, e.message)
-        e.printStackTrace()
-        HttpResponseRud(
-            response = RudApi.getError(description = e.message, errorCode = e.hashCode()),
-            status = HttpStatusCode(value = 599, description = e.message ?: "Unknown Exception")
-        )
-    }
-}
-
-suspend inline fun <reified T, RESP> HttpClient.postRequest(
-    urlString: String,
-    query: Map<String, Any?>? = null,
-): HttpResponseRud<RESP> {
-    return try {
-        val queryParams = Parameters.build {
-            query?.forEach { (str, any) ->
-                any?.let { append(str, any.toString()) }
-            }
-        }
-        val response = post(
-            urlString = urlString,
-            block = {
-                url { parameters.appendAll(queryParams) }
-            }
-
-        )
-        HttpResponseRud(
-            response = response.body(),
-            status = response.status
-        )
-    } catch (e: Exception) {
-        logE(urlString, e.message)
-        e.printStackTrace()
-        HttpResponseRud(
-            response = RudApi.getError(description = e.message, errorCode = e.hashCode()),
-            status = HttpStatusCode(value = 599, description = e.message ?: "Unknown Exception")
-        )
-    }
-}
-
-suspend inline fun <reified RESP> HttpClient.postRequest(
-    urlString: String,
-): HttpResponseRud<RESP> {
-    return try {
-        val response = post(
-            urlString = urlString,
-        )
-        HttpResponseRud(
-            response = response.body(),
-            status = response.status
-        )
-    } catch (e: Exception) {
-        logE(urlString, e.message)
-        e.printStackTrace()
-        HttpResponseRud(
-            response = RudApi.getError(description = e.message, errorCode = e.hashCode()),
-            status = HttpStatusCode(value = 599, description = e.message ?: "Unknown Exception")
-        )
-    }
-}
-
-suspend inline fun <reified T, RESP> HttpClient.getRequest(
-    urlString: String,
-    body: T
-): HttpResponseRud<RESP> {
-    val response = get(urlString) { setBody(body) }
-    return HttpResponseRud(
-        response = response.body(),
-        status = response.status
-    )
-}
+//suspend inline fun <reified T, RESP> HttpClient.postRequest(
+//    urlString: String,
+//    query: Map<String, Any?>? = null,
+//): HttpResponseRud<RESP> {
+//    return try {
+//        val queryParams = Parameters.build {
+//            query?.forEach { (str, any) ->
+//                any?.let { append(str, any.toString()) }
+//            }
+//        }
+//        val response = post(
+//            urlString = urlString,
+//            block = {
+//                url { parameters.appendAll(queryParams) }
+//            }
+//
+//        )
+//        HttpResponseRud(
+//            response = response.body(),
+//            status = response.status
+//        )
+//    } catch (e: Exception) {
+//        logE(urlString, e.message)
+//        e.printStackTrace()
+//        HttpResponseRud(
+//            response = RudApi.getError(description = e.message, errorCode = e.hashCode()),
+//            status = HttpStatusCode(value = 599, description = e.message ?: "Unknown Exception")
+//        )
+//    }
+//}
+//
+//suspend inline fun <reified RESP> HttpClient.postRequest(
+//    urlString: String,
+//): HttpResponseRud<RESP> {
+//    return try {
+//        val response = post(
+//            urlString = urlString,
+//        )
+//        HttpResponseRud(
+//            response = response.body(),
+//            status = response.status
+//        )
+//    } catch (e: Exception) {
+//        logE(urlString, e.message)
+//        e.printStackTrace()
+//        HttpResponseRud(
+//            response = RudApi.getError(description = e.message, errorCode = e.hashCode()),
+//            status = HttpStatusCode(value = 599, description = e.message ?: "Unknown Exception")
+//        )
+//    }
+//}
+//
+//suspend inline fun <reified T, RESP> HttpClient.getRequest(
+//    urlString: String,
+//    body: T
+//): HttpResponseRud<RESP> {
+//    val response = get(urlString) { setBody(body) }
+//    return HttpResponseRud(
+//        response = response.body(),
+//        status = response.status
+//    )
+//}
 
 suspend inline fun <reified T> HttpClient.getRequest(
     urlString: String

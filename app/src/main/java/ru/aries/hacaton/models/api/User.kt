@@ -3,27 +3,26 @@ package ru.aries.hacaton.models.api
 import com.fasterxml.jackson.annotation.JsonIgnore
 import kotlinx.serialization.Serializable
 import ru.aries.hacaton.base.res.TextApp
-import ru.aries.hacaton.base.theme.ThemeApp
 import ru.aries.hacaton.base.util.FieldValidators
+
 @Serializable
 data class GettingUser(
     val email: String? = null,
     val tel: String? = null,
     val is_active: Boolean? = null,
     val is_superuser: Boolean? = null,
-
     val avatar: String? = null,
     val first_name: String? = null,
     val last_name: String? = null,
     val patronymic: String? = null,
-    val fields: GettingFields? = null,
+    val fields: List<GettingFields>? = null,
     val birthdate: Long? = null,
     val gender: Int? = null,
     val id: Long = 0,
     val last_activity: Long? = null,
 
 
-) {
+    ) {
 
     fun getBirthdateInMillis() = if (this.birthdate == null) null else this.birthdate * 1000
     fun getUpdatingUser() = UpdatingUser(
@@ -35,7 +34,7 @@ data class GettingUser(
         tel = this.tel,
         birthdate = this.birthdate,
 
-    )
+        )
 
     fun getFullName(): String {
         val first = this.first_name?.let { "$it " } ?: ""
@@ -109,6 +108,7 @@ data class LoginData(
     val email: String,
     val password: String,
 )
+
 @Serializable
 data class GettingFields(
     val name: String?,
@@ -217,10 +217,10 @@ enum class RoleFamily(val numbRole: Int) {
     }
 
     fun getTextAddMembers() = when (this) {
-        SPOUSE  -> TextApp.textAddSpouse
-        CHILD   -> TextApp.textAddChild
-        SELF    -> TextApp.textAddSelf
-        PARENT  -> TextApp.textAddParent
+        SPOUSE -> TextApp.textAddSpouse
+        CHILD -> TextApp.textAddChild
+        SELF -> TextApp.textAddSelf
+        PARENT -> TextApp.textAddParent
         SIBLING -> TextApp.textAddSibling
     }
 }
@@ -281,7 +281,7 @@ data class CreatingFamilyMember(
 
     @JsonIgnore
     fun getEnterDataYourSatellite() =
-        when (RoleFamily.getRoleFamily(this.role)){
+        when (RoleFamily.getRoleFamily(this.role)) {
             RoleFamily.SPOUSE -> convertInEnumGender().getGenderTextShort()
             RoleFamily.CHILD -> TextApp.textChildren
             RoleFamily.SELF -> TextApp.formatSomethingYou(convertInEnumGender().getGenderTextShort())
@@ -290,57 +290,109 @@ data class CreatingFamilyMember(
         }
 
 
-
     @JsonIgnore
     fun convertInEnumGender() = Gender.getGenderUser(this.gender)
 
 
 }
+
 data class GettingOffer(
-    val title:String?,
-    val min_price:Int?,
-    val id:Int,
-    val max_price:Int?,
-    val percent:Int?,
-    val annual_payment:Int?,
-    val payment_term:Int?,
-    val bank:GettingBank?,
-    )
+    val title: String?,
+    val min_price: Int?,
+    val id: Int,
+    val max_price: Int?,
+    val percent: Int?,
+    val annual_payment: Int?,
+    val payment_term: Int?,
+    val bank: GettingBank?,
+)
 
 data class GettingBank(
-    val name:String?,
-    val url:String?,
-    val icon:String?,
-    val id:Int)
+    val name: String?,
+    val url: String?,
+    val icon: String?,
+    val id: Int
+)
 
 
 data class GettingBidByBank(
-val desired_amount: Int?,
-val id: Int,
-val is_accepted: Boolean?,
-val actual_amount: Int?,
-val annual_payment: Int?,
-val percent: Int?,
-val created: Long?,
-val offer: GettingOffer?,
-val user: GettingUser?,
+    val desired_amount: Int?,
+    val id: Int,
+    val is_accepted: Boolean?,
+    val actual_amount: Int?,
+    val annual_payment: Int?,
+    val percent: Int?,
+    val created: Long?,
+    val offer: GettingOffer?,
+    val user: GettingUser?,
 
+    )
+
+val mockGettingUser = GettingUser(
+    email = "email",
+    tel = "tel",
+    is_active = null,
+    is_superuser = false,
+    avatar = "avatar",
+    first_name = "first_name",
+    last_name = "last_name",
+    patronymic = "patronymic",
+    fields = listOf(),
+    birthdate = 123123123,
+    gender = 1,
+    id = 0,
+    last_activity = 12313123,
 )
 
-data class  BidApproval(
+val mockGettingBank = GettingBank(
+    name = "name GettingBank",
+    url = "url GettingBank",
+    icon = "icon GettingBank",
+    id = 1,
+
+    )
+
+val mockGettingOffer = GettingOffer(
+    title = "title GettingOffer",
+    min_price = 1,
+    id = 1,
+    max_price = 11111,
+    percent = 123,
+    annual_payment = 123123123,
+    payment_term = 123123123,
+    bank = mockGettingBank,
+
+    )
+
+val mockGettingBidByBank = GettingBidByBank(
+    desired_amount = 1,
+    id = 1,
+    is_accepted = null,
+    actual_amount = 1,
+    annual_payment = 1,
+    percent = 1,
+    created = 11231231231,
+    offer = mockGettingOffer,
+    user = mockGettingUser,
+
+    )
+
+data class BidApproval(
     val actual_amount: Int,
     val annual_payment: Int,
     val percent: Int,
 
     )
-data class  BidCallbackBody(
+
+data class BidCallbackBody(
     val is_accepted: Boolean,
     val approval: BidApproval,
 
-)
-data class  BidApprovalResponse(
+    )
+
+data class BidApprovalResponse(
     val code: Int?,
     val error: String?,
     val bid: GettingBidByBank,
 
-)
+    )

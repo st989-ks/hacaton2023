@@ -535,12 +535,7 @@ private fun TopPanel(
             ) {
                 IconApp(painter = rememberImageRaw(id = R.raw.ic_notifications))
             }
-
-            IconButtonApp(
-                modifier = Modifier, onClick = onClickLogout
-            ) {
-                IconApp(painter = rememberImageRaw(id = R.raw.ic_cached))
-            }
+            BoxSpacer()
         }
     }
 }

@@ -1,9 +1,6 @@
 package ru.aries.hacaton.screens.module_main
 
 import android.app.Activity
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandIn
-import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -220,24 +217,19 @@ private fun MainScreen(
                 }
             }
         }
-        AnimatedVisibility(
+
+        FloatingActionButtonApp(
             modifier = Modifier
                 .systemBarsPadding()
                 .align(Alignment.BottomEnd)
                 .padding(DimApp.screenPadding),
-            visible = status == ScreenChoose.FIRST,
-            enter = expandIn(),
-            exit = shrinkOut(),
+            onClick = onClickAddNewOffer
         ) {
-            FloatingActionButtonApp(
-                modifier = Modifier,
-                onClick = onClickAddNewOffer
-            ) {
-                IconApp(
-                    painter = rememberImageRaw(id = R.raw.ic_edit)
-                )
-            }
+            IconApp(
+                painter = rememberImageRaw(id = R.raw.ic_cached)
+            )
         }
+
     }
 }
 

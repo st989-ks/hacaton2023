@@ -142,7 +142,7 @@ private fun MainScreen(
 
                 when (status) {
                     ScreenChoose.FIRST -> LazyColumn(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.fillMaxWidth().weight(1f),
                         contentPadding = PaddingValues(DimApp.screenPadding),
                         verticalArrangement = Arrangement.spacedBy(DimApp.screenPadding),
                         content = {
@@ -165,7 +165,7 @@ private fun MainScreen(
 
 
                     ScreenChoose.SECOND -> LazyColumn(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier.fillMaxWidth().weight(1f),
                         contentPadding = PaddingValues(DimApp.screenPadding),
                         verticalArrangement = Arrangement.spacedBy(DimApp.screenPadding),
                         content = {

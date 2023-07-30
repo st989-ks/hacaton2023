@@ -83,7 +83,7 @@ class ApiSignIn(
         } catch (e: Exception) {
             logE("postBidId", e.message)
             e.printStackTrace()
-            RudApi.getError(description = e.message, errorCode = e.hashCode())
+            RudApi.getError(description = e.message?.take(100), errorCode = e.hashCode())
         }
     }
 

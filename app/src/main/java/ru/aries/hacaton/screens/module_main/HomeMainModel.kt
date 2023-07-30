@@ -45,10 +45,12 @@ class HomeMainModel(
 
     fun loadData() {
         coroutineScope.launch {
+            gDSetLoader(true)
             _bid.value = apiSignIn.getBids().data ?: listOf(mockGettingBidByBank)
             _offers.value = apiSignIn.getOffers().data ?: listOf(mockGettingOffer)
             logE(_offers.value)
             _user.value = apiSignIn.getUserLocalData()
+            gDSetLoader(false)
         }
     }
 

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -140,7 +141,7 @@ private fun AuthorizationScr(
                         TextBodyMedium(text = TextApp.textEmailAddress)
                         BoxSpacer(0.5f)
                         TextFieldOutlinesApp(
-                            modifier = Modifier,
+                            modifier = Modifier.width(DimApp.widthTextField),
                             value = emailAddress,
                             onValueChange = { emailAddress = it },
                             singleLine = true,
@@ -160,7 +161,7 @@ private fun AuthorizationScr(
                         TextBodyMedium(text = TextApp.textPassword)
                         BoxSpacer(0.5f)
                         TextFieldOutlinesApp(
-                            modifier = Modifier,
+                            modifier = Modifier.width(DimApp.widthTextField),
                             value = password,
                             onValueChange = { password = it },
                             singleLine = true,

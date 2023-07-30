@@ -27,6 +27,7 @@ object DimApp {
 
     val sizeWidthCardAlbum: Dp = 250.dp
     val sizeHeightCardAlbum: Dp = 160.dp
+    val widthTextField: Dp = 350.dp
 
 
     val menuItemsWidth = 22.dp

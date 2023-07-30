@@ -1,6 +1,9 @@
 package ru.aries.hacaton.screens.module_main
 
 import android.app.Activity
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandIn
+import androidx.compose.animation.shrinkOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -41,6 +44,7 @@ import ru.aries.hacaton.base.common_composable.DialogBackPressExit
 import ru.aries.hacaton.base.common_composable.FloatingActionButtonApp
 import ru.aries.hacaton.base.common_composable.IconApp
 import ru.aries.hacaton.base.common_composable.IconButtonApp
+import ru.aries.hacaton.base.common_composable.TextBodyLarge
 import ru.aries.hacaton.base.common_composable.TextBodyMedium
 import ru.aries.hacaton.base.common_composable.TextTitleMedium
 import ru.aries.hacaton.base.common_composable.colorsButtonAccentApp
@@ -83,6 +87,7 @@ class HomeMainScreen() : Screen {
             avatar = user.avatar ?: "",
             name = user.first_name ?: "",
             onClickUser = {},
+            onClickAddNewOffer = model::loadData,
             onClickApproval = model::setAccept,
             onClickMenu = model::setNewtScreen,
         )
@@ -96,6 +101,7 @@ private fun MainScreen(
     offers: List<GettingOffer>,
     onClickLogout: () -> Unit,
     onClickNotifications: () -> Unit,
+    onClickAddNewOffer: () -> Unit,
     avatar: String,
     name: String,
     onClickUser: () -> Unit,
@@ -143,7 +149,7 @@ private fun MainScreen(
                         contentPadding = PaddingValues(DimApp.screenPadding),
                         verticalArrangement = Arrangement.spacedBy(DimApp.screenPadding),
                         content = {
-                            items(offers) { item ->
+                            items(items = offers, key = { it.id }) { item ->
                                 ItemOffers(
                                     title = item.title ?: "",
                                     minPrice = item.min_price?.toString() ?: "",
@@ -166,7 +172,7 @@ private fun MainScreen(
                         contentPadding = PaddingValues(DimApp.screenPadding),
                         verticalArrangement = Arrangement.spacedBy(DimApp.screenPadding),
                         content = {
-                            items(bid) { item ->
+                            items(items = bid, key = { it.id }) { item ->
 
                                 ItemBid(
                                     desiredAmount = item.desired_amount?.toString() ?: "",
@@ -194,17 +200,17 @@ private fun MainScreen(
                                             true,
                                             item.id,
                                             item.actual_amount ?: 1,
-                                            item.annual_payment ?: 1,
-                                            item.percent ?: 1,
+                                            item.offer?.annual_payment ?: 1,
+                                            item.offer?.percent ?: 1,
                                         )
                                     },
                                     onClickNoAccepted = {
                                         onClickApproval.invoke(
                                             false,
                                             item.id,
-                                            item.actual_amount ?: 1,
-                                            item.annual_payment ?: 1,
-                                            item.percent ?: 1,
+                                            item.desired_amount ?: 1,
+                                            item.offer?.annual_payment ?: 1,
+                                            item.offer?.percent ?: 1,
                                         )
                                     },
                                 )
@@ -214,8 +220,23 @@ private fun MainScreen(
                 }
             }
         }
-        FloatingActionButtonApp(onClick = { /*TODO*/ }) {
-            
+        AnimatedVisibility(
+            modifier = Modifier
+                .systemBarsPadding()
+                .align(Alignment.BottomEnd)
+                .padding(DimApp.screenPadding),
+            visible = status == ScreenChoose.FIRST,
+            enter = expandIn(),
+            exit = shrinkOut(),
+        ) {
+            FloatingActionButtonApp(
+                modifier = Modifier,
+                onClick = onClickAddNewOffer
+            ) {
+                IconApp(
+                    painter = rememberImageRaw(id = R.raw.ic_edit)
+                )
+            }
         }
     }
 }
@@ -293,6 +314,18 @@ private fun ItemBid(
     onClickNoAccepted: () -> Unit,
 
     ) {
+    val colorAccepted = when (isAccepted) {
+        true -> ThemeApp.colors.goodContent
+        false -> ThemeApp.colors.attentionContent
+        null -> ThemeApp.colors.textDark
+    }
+
+    val textAccepted = when (isAccepted) {
+        true -> "Одобрено"
+        false -> "Отказано"
+        null -> "В ожидании"
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -310,6 +343,11 @@ private fun ItemBid(
             TextTitleMedium(text = "Заявка №$idBid")
             BoxSpacer()
             TextTitleMedium(text = created)
+            BoxSpacer()
+            TextBodyLarge(
+                color = colorAccepted,
+                text = textAccepted
+            )
         }
         TextBodyMedium(text = "Имя: $firstName")
         TextBodyMedium(text = "Фамилия: $lastName")
@@ -319,7 +357,7 @@ private fun ItemBid(
 
         BoxSpacer()
         TextBodyMedium(text = "Список документов: ")
-        BoxSpacer(.3f)
+        BoxSpacer()
         Row(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically,
@@ -328,7 +366,8 @@ private fun ItemBid(
                 BoxImageLoad(
                     modifier = Modifier
                         .size(DimApp.iconStubBig)
-                        .clip(ThemeApp.shape.smallAll),
+                        .clip(ThemeApp.shape.smallAll)
+                        .clickableRipple { },
                     image = R.drawable.inn
                 )
                 BoxSpacer()
@@ -508,7 +547,7 @@ private fun TopPanel(
             IconButtonApp(
                 modifier = Modifier, onClick = onClickLogout
             ) {
-                IconApp(painter = rememberImageRaw(id = R.raw.ic_logout))
+                IconApp(painter = rememberImageRaw(id = R.raw.ic_cached))
             }
         }
     }

@@ -89,6 +89,7 @@ class Client(
                 dataStore.getLocalData().tokenFirebase?.let { tokenFirebase ->
                     header("x-firebase-token", tokenFirebase)
                 }
+                header("verification-sert", "verification-sert")
             }
         }
     }
